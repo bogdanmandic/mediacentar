@@ -19,11 +19,34 @@ router.get('/', function (req, res, next) {
 });
 
 
-router.post('/imagesWithTags', async (req, res) => {
+// router.post('/marko', (req, res) => {
+//   let { tags } = req.body;
+
+//   tags = Array.isArray(tags) ? tags : tags.split();
+  
+//   res.json(Image.aggregate([
+//     { $match: { tags: { $in: tags } } },
+//     { $project: { "tags": 1, "tagsCopy": "$tags" } },
+//     { $unwind: "$tagsCopy" },
+//     { $match: { tagsCopy: { $in: tags } } },
+//     {
+//       $group: {
+//         _id: "$_id",
+//         counter: { $sum: 1 },
+//         tags: { "$first": "$tags" }
+//       }
+//     },
+//     { $sort: { counter: -1 } },
+//     { $project: { "tags": 1 } }
+//   ]))
+// })
+
+router.post('/imagesWithTags', (req, res) => {
   let { tags } = req.body;
   tags = Array.isArray(tags) ? tags : tags.split();
-  Image.find({}, (err, allImages) => {
+  Image.find({ tags: { $in: tags }  }, (err, allImages) => {
     if (err) res.json(err);
+    console.log('=====', allImages)
     allImages.forEach(s => {
       var poklopljeniTagovi = 0;
       console.log(s)
@@ -42,7 +65,7 @@ router.post('/imagesWithTags', async (req, res) => {
     var reversed = newArray.reverse()
     res.json(reversed)
     mozeDaProdje = []
-    // console.log('=-========', mozeDaProdje)
+    console.log('=-========', mozeDaProdje)
   });
 });
 
